@@ -39,8 +39,6 @@ const HomeRedirect = () => {
   return <div>Redirecting to home...</div>;
 };
 
-// const user = JSON.parse(localStorage.getItem("user") ?? "{}");
-
 const App = () => {
   return (
     <BrowserRouter>

@@ -29,6 +29,9 @@ const initialState: UserType = {
   lastName: "",
   email: "",
   password: "",
+  initials: "",
+  color: "",
+  _id: "",
 };
 
 const Auth = () => {

@@ -1,12 +1,22 @@
-import { Card } from "@mui/material";
 import DailyCash from "./DailyCash";
+import { SavedMoneyHistoryType } from "../../types/types";
 
-const CashHistory = () => {
+interface CashHistoriesProps {
+  cashData: SavedMoneyHistoryType[];
+  setEditingData: React.Dispatch<React.SetStateAction<SavedMoneyHistoryType>>;
+}
+
+const CashHistories: React.FC<CashHistoriesProps> = ({
+  cashData,
+  setEditingData,
+}) => {
   return (
-    <Card>
-      <DailyCash />
-    </Card>
+    <div>
+      {cashData.map((cash: SavedMoneyHistoryType) => (
+        <DailyCash key={cash._id} cash={cash} setEditingData={setEditingData} />
+      ))}
+    </div>
   );
 };
 
-export default CashHistory;
+export default CashHistories;

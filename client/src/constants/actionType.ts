@@ -1,3 +1,10 @@
 // AUTH
 export const AUTH = "AUTH";
 export const LOGOUT = "LOGOUT";
+
+//CASH
+export const GET_CASH_HISTORIES = "GET_CASH_HISTORIES";
+export const REGISTER_CASH_AMOUNT = "REGISTER_CASH_AMOUNT";
+export const CONFIRM_CASH_AMOUNT = "CONFIRM_CASH_AMOUNT";
+export const EDIT_CASH_AMOUNT = " EDIT_CASH_AMOUNT";
+export const DELETE_CASH = "DELETE_CASH";

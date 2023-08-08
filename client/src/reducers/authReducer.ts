@@ -7,6 +7,7 @@ const initialState: UserType = {
   lastName: "",
   email: "",
   password: "",
+  _id: "",
 };
 
 const authReducer = (state = initialState, action: ActionType) => {
