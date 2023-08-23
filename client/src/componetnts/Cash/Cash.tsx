@@ -4,10 +4,10 @@ import Header from "../Header/Header";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux/es/hooks/useSelector";
 import { SavedMoneyHistoryType, initialCashState } from "../../types/types";
-import axios from "axios";
 import { API } from "../../config/config";
 import { useDispatch } from "react-redux";
-import { getCashHistories } from "../../actions/authAction";
+import { getCashHistories } from "../../actions/action";
+import NoUser from "../Auth/NoUser";
 
 const Cash = () => {
   const [editingData, setEditingData] =
@@ -15,9 +15,11 @@ const Cash = () => {
   const [cashData, setCashData] = useState<SavedMoneyHistoryType[]>([]);
   const dispatch = useDispatch();
 
+  const localStorageUser = localStorage.getItem("user");
+  const user = localStorageUser !== null ? JSON.parse(localStorageUser) : "";
+
   useEffect(() => {
-    axios
-      .get(`${API}/cash/history`)
+    API.get("/cash/history")
       .then((res) => {
         const data = res.data.data;
         dispatch(getCashHistories(data));
@@ -26,28 +28,30 @@ const Cash = () => {
   }, []);
 
   const cash = useSelector(
-    (state: { cashReducer: SavedMoneyHistoryType[] }) => state.cashReducer
+    (state: { cashReducers: SavedMoneyHistoryType[] }) => state.cashReducers
   );
 
   useEffect(() => {
     setCashData(cash);
   }, [cash]);
 
-  useEffect(() => {
-    console.log("cashData is changed", cashData);
-  }, [cashData]);
-
   return (
-    <div>
-      <Header />
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <CashHistory cashData={cashData} setEditingData={setEditingData} />
-        <MoneyCalculator
-          editingData={editingData}
-          setEditingData={setEditingData}
-        />
-      </div>
-    </div>
+    <>
+      {user ? (
+        <div>
+          <Header />
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <CashHistory cashData={cashData} setEditingData={setEditingData} />
+            <MoneyCalculator
+              editingData={editingData}
+              setEditingData={setEditingData}
+            />
+          </div>
+        </div>
+      ) : (
+        <NoUser />
+      )}
+    </>
   );
 };
 

@@ -1,6 +1,6 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Typography,
   Box,
@@ -19,10 +19,10 @@ import {
   StyledTypography,
 } from "./styles";
 import { Visibility, VisibilityOff, LockOutlined } from "@mui/icons-material";
-import { auth } from "../../actions/authAction";
+import { auth, endLoading, startLoading } from "../../actions/action.ts";
 import { UserType } from "../../types/types.ts";
-import axios from "axios";
 import { API } from "../../config/config";
+import Loading from "../Loading/Loading.tsx";
 
 const initialState: UserType = {
   firstName: "",
@@ -42,6 +42,10 @@ const Auth = () => {
   const [passwordError, setPasswordError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+  const isLoading = useSelector(
+    (state: any) => state.loadingReducers.isLoading
+  );
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -51,33 +55,38 @@ const Auth = () => {
     setEmailError(false);
     setPasswordError(false);
 
-    axios
-      .post(`${API}/user/${isSignup ? "signup" : "signin"}`, inputData)
-      .then((res) => {
-        const data = res.data.data;
+    dispatch(startLoading(true));
+    try {
+      const res = await API.post(
+        `/user/${isSignup ? "signup" : "signin"}`,
+        inputData
+      );
+      const data = res.data.data.user;
+      const token = res.data.data.token;
 
-        dispatch(auth(data));
-        navigate("/home");
-      })
-      .catch((error) => {
-        const errorMessage =
-          error.response.data.message || "An error occurred. Please try again.";
-        setErrorMessage(errorMessage);
+      dispatch(auth({ ...data, token }));
+      navigate("/products");
+    } catch (error: any) {
+      const errorMessage =
+        error.response.data.message || "An error occurred. Please try again.";
+      setErrorMessage(errorMessage);
 
-        if (
-          errorMessage === "Email already exists" ||
-          errorMessage === "Invalid email address"
-        ) {
-          setEmailError(true);
-        } else if (errorMessage === "Password does not match") {
-          setPasswordError(true);
-        } else {
-          setPasswordError(true);
-          setEmailError(true);
-        }
+      if (
+        errorMessage === "Email already exists" ||
+        errorMessage === "Invalid email address"
+      ) {
+        setEmailError(true);
+      } else if (errorMessage === "Password does not match") {
+        setPasswordError(true);
+      } else {
+        setPasswordError(true);
+        setEmailError(true);
+      }
 
-        console.log("Error", error);
-      });
+      console.log("Error", error);
+    } finally {
+      dispatch(endLoading(false));
+    }
   };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -97,6 +106,10 @@ const Auth = () => {
   const handleSwitch = () => {
     setIsSignup((prevIsSignup) => !prevIsSignup);
   };
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <AuthContainer>

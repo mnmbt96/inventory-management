@@ -1,12 +1,21 @@
-import React from "react";
 import Header from "../Header/Header";
+import NoUser from "../Auth/NoUser";
 
 const Shift = () => {
+  const localStorageUser = localStorage.getItem("user");
+  const user = localStorageUser !== null ? JSON.parse(localStorageUser) : "";
+
   return (
-    <div>
-      <Header />
-      <div>Shift</div>
-    </div>
+    <>
+      {user ? (
+        <div>
+          <Header />
+          <div>coming soon...</div>
+        </div>
+      ) : (
+        <NoUser />
+      )}
+    </>
   );
 };
 

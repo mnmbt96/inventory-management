@@ -18,6 +18,10 @@ export const initialUserState = {
   _id: "",
 };
 
+export interface DecodedToken {
+  exp: number;
+}
+
 export interface ActionType {
   data: any;
   type: string;
@@ -74,3 +78,38 @@ export const initialCashState: SavedMoneyHistoryType = {
     user: initialUserState,
   },
 };
+
+export interface ProductType {
+  _id: string;
+  name: string;
+  categories: string[];
+  date: string;
+  memo: string;
+  image: string;
+  status: string;
+  discount: number;
+}
+
+export const initialProductState: ProductType = {
+  _id: "",
+  name: "",
+  categories: [],
+  date: "",
+  memo: "",
+  image: "",
+  status: "",
+  discount: 0,
+};
+
+export const categories = [
+  { name: "Snack", value: "snack" },
+  { name: "Candy", value: "candy" },
+  { name: "Gummies", value: "gummies" },
+  { name: "Gum", value: "gum" },
+  { name: "Cookies & Buiscuits", value: "cookiesBuiscuits" },
+  { name: "Chocolate", value: "chocolate" },
+  { name: "Instant Noodle", value: "instantNoodle" },
+  { name: "Cosmetics", value: "cosmetics" },
+  { name: "Daily Use", value: "dailyUse" },
+  { name: "Miscellaneous", value: "miscellaneous" },
+];

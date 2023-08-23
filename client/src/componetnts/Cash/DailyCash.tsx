@@ -16,11 +16,10 @@ import {
   initialUserState,
 } from "../../types/types";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { API } from "../../config/config";
 import moment from "moment";
 import { useDispatch } from "react-redux";
-import { confirmCashAmount, deleteCash } from "../../actions/authAction";
+import { confirmCashAmount, deleteCash } from "../../actions/action";
 
 interface CashHistoriesProps {
   cash: SavedMoneyHistoryType;
@@ -61,16 +60,14 @@ const DailyCash: React.FC<CashHistoriesProps> = ({ cash, setEditingData }) => {
     setCashData(newData);
     dispatch(confirmCashAmount(newData));
 
-    await axios
-      .put(`${API}/cash/update`, {
-        cash: cash,
-        user: loginUser,
-        date: formattedDate,
-        time: formattedTime,
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    API.put("/cash/update", {
+      cash: cash,
+      user: loginUser,
+      date: formattedDate,
+      time: formattedTime,
+    }).catch((error) => {
+      console.log(error);
+    });
   };
 
   const handleEdit = () => {
@@ -79,24 +76,30 @@ const DailyCash: React.FC<CashHistoriesProps> = ({ cash, setEditingData }) => {
 
   const handleDelete = () => {
     dispatch(deleteCash(cashData._id));
-    axios.delete(`${API}/cash/delete/${cashData._id}`).catch((error) => {
+    API.delete(`/cash/delete/${cashData._id}`).catch((error) => {
       console.log(error);
     });
   };
 
   return (
-    <Card key={cashData._id} sx={{ margin: "15px", padding: "10px" }}>
+    <Card
+      key={cashData._id}
+      sx={{ marginTop: "10px", padding: "10px", width: "300px" }}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        <Typography>{cashData.create.date}</Typography>
+        <div>
+          <Button onClick={handleEdit}>Edit</Button>
+          <Button onClick={handleDelete}>Delete</Button>
+        </div>
+      </div>
       <TableContainer>
         <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>
-                <Typography>{cashData.create.date}</Typography>
-                <Button onClick={handleEdit}>Edit</Button>
-                <Button onClick={handleDelete}>Delete</Button>
-              </TableCell>
-            </TableRow>
-          </TableHead>
           <TableBody>
             {cashData.dollars.map((dollar) => (
               <TableRow key={dollar.name}>
@@ -123,37 +126,57 @@ const DailyCash: React.FC<CashHistoriesProps> = ({ cash, setEditingData }) => {
                 </TableCell>
               </TableRow>
             ))}
-            <TableRow>
-              <TableCell>Total: ${cashData.total}</TableCell>
-              <TableCell>Customers: {cashData.customers} </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>
-                {cashData.create.user && (
-                  <div style={{ display: "flex" }}>
-                    <Avatar sx={{ bgcolor: cashData.create.user.color }}>
-                      {cashData.create.user.initials}
-                    </Avatar>
-                    <Typography>{cashData.create.user.firstName}</Typography>
-                  </div>
-                )}
-                {isConfirmed && cashData.update.user && (
-                  <div style={{ display: "flex" }}>
-                    <Avatar sx={{ bgcolor: cashData.update.user?.color }}>
-                      {cashData.update.user.initials}
-                    </Avatar>
-                    <Typography> {cashData.update.user.firstName}</Typography>
-                  </div>
-                )}
-                {!isConfirmed && (
-                  <div>
-                    <Button onClick={handleConfirm}>Confirm</Button>
-                  </div>
-                )}
-              </TableCell>
-            </TableRow>
           </TableBody>
         </Table>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            margin: "10px",
+          }}
+        >
+          <Typography sx={{ fontWeight: "bold" }}>
+            Total: ${cashData.total}
+          </Typography>
+          <Typography sx={{ fontWeight: "bold" }}>
+            Customers: {cashData.customers}
+          </Typography>
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+          {cashData.create.user && (
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <Typography>{cashData.create.user.firstName}</Typography>
+              <Avatar
+                sx={{
+                  bgcolor: cashData.create.user.color,
+                  margin: "5px",
+                }}
+              >
+                {cashData.create.user.initials}
+              </Avatar>
+            </div>
+          )}
+          {isConfirmed && cashData.update.user && (
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <Typography> {cashData.update.user.firstName}</Typography>
+              <Avatar
+                sx={{
+                  bgcolor: cashData.update.user?.color,
+                  margin: "5px",
+                }}
+              >
+                {cashData.update.user.initials}
+              </Avatar>
+            </div>
+          )}
+          {!isConfirmed && (
+            <div>
+              <Button onClick={handleConfirm}>Confirm</Button>
+            </div>
+          )}
+        </div>
       </TableContainer>
     </Card>
   );

@@ -11,7 +11,7 @@ const CashHistories: React.FC<CashHistoriesProps> = ({
   setEditingData,
 }) => {
   return (
-    <div>
+    <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
       {cashData.map((cash: SavedMoneyHistoryType) => (
         <DailyCash key={cash._id} cash={cash} setEditingData={setEditingData} />
       ))}

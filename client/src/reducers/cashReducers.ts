@@ -9,7 +9,7 @@ import { ActionType, SavedMoneyHistoryType } from "../types/types";
 
 const initialState: SavedMoneyHistoryType[] = [];
 
-const cashReducer = (state = initialState, action: ActionType) => {
+const cashReducers = (state = initialState, action: ActionType) => {
   let newCashArray = [];
 
   switch (action.type) {
@@ -49,4 +49,4 @@ const cashReducer = (state = initialState, action: ActionType) => {
   }
 };
 
-export default cashReducer;
+export default cashReducers;

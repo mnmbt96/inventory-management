@@ -1,52 +1,42 @@
 import { useEffect } from "react";
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
-import Home from "./componetnts/Home/Home.tsx";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Products from "./componetnts/Products/Products.tsx";
 import Cash from "./componetnts/Cash/Cash.tsx";
 import Auth from "./componetnts/Auth/Auth.tsx";
 import Shift from "./componetnts/Shift/Shift.tsx";
+import { DecodedToken } from "./types/types.ts";
+import decode from "jwt-decode";
 
-interface UserType {
-  _id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-}
-
-// // TEST DATA
-// const userInfo: UserType = {
-//   _id: "123",
-//   firstName: "Manami",
-//   lastName: "Batai",
-//   email: "batai@gmail.com",
-//   password: "123",
-// };
-
-// localStorage.setItem("user", JSON.stringify(userInfo));
-
-// localStorage.clear();
-
-const user: UserType | null = JSON.parse(
-  localStorage.getItem("user") ?? "null"
-);
+const localStorageUser = localStorage.getItem("user");
+const user = localStorageUser !== null ? JSON.parse(localStorageUser) : "";
 
 const HomeRedirect = () => {
-  const navigate = useNavigate();
-  useEffect(() => {
-    user?._id ? navigate("/home") : navigate("/auth");
-  }, [navigate]);
-  return <div>Redirecting to home...</div>;
+  return user ? <Navigate to="/products" /> : <Navigate to="/auth" />;
 };
 
 const App = () => {
+  useEffect(() => {
+    if (user.token) {
+      try {
+        const decodedToken: DecodedToken = decode(user.token);
+        const currentTime = new Date().getTime() / 1000;
+
+        if (decodedToken.exp < currentTime) {
+          localStorage.clear();
+        }
+      } catch (error) {
+        console.error("Token decoding error:", error);
+      }
+    }
+  }, [user.token, Navigate]);
+
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomeRedirect />} />
-        <Route path="/home" element={<Home />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/products" element={<Products />} />
+        <Route path="/products/search" element={<Products />} />
         <Route path="/cash" element={<Cash />} />
         <Route path="/shift" element={<Shift />} />
       </Routes>

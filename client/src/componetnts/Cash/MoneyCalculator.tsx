@@ -24,10 +24,9 @@ import {
   initialDollars,
   initialCents,
 } from "../../types/types";
-import axios from "axios";
 import { API } from "../../config/config";
 import moment from "moment";
-import { registerCashAmount, editCashAmount } from "../../actions/authAction";
+import { registerCashAmount, editCashAmount } from "../../actions/action";
 
 interface MoneyCalculatorProps {
   editingData: SavedMoneyHistoryType;
@@ -122,10 +121,6 @@ const MoneyCalculator: React.FC<MoneyCalculatorProps> = ({
     setCustomersInput(0);
   };
 
-  useEffect(() => {
-    console.log("dollarsInput", dollarsInput);
-  }, [dollarsInput]);
-
   const handleSubmit = () => {
     let loginUser: UserType = initialUserState;
     const userFromStorage = localStorage.getItem("user");
@@ -155,14 +150,10 @@ const MoneyCalculator: React.FC<MoneyCalculatorProps> = ({
 
     if (editingData?._id !== "") {
       dispatch(editCashAmount(sendData));
-      axios
-        .put(`${API}/cash/edit`, sendData)
-        .catch((error) => console.log(error));
+      API.put("/cash/edit", sendData).catch((error) => console.log(error));
     } else {
       dispatch(registerCashAmount(sendData));
-      axios
-        .post(`${API}/cash/register`, sendData)
-        .catch((error) => console.log(error));
+      API.post("/cash/register", sendData).catch((error) => console.log(error));
     }
 
     setModalOpen(false);
@@ -170,9 +161,9 @@ const MoneyCalculator: React.FC<MoneyCalculatorProps> = ({
   };
 
   return (
-    <Card sx={{ margin: "15px", height: "100%" }}>
+    <Card sx={{ margin: "10px 0", height: "100%" }}>
       <div>
-        <Typography variant="h5" margin={2}>
+        <Typography margin={2}>
           {editingData._id !== "" ? "Edit" : "Register"} Cash Amounts
         </Typography>
         <Container sx={{ display: "flex" }}>
@@ -210,7 +201,6 @@ const MoneyCalculator: React.FC<MoneyCalculatorProps> = ({
                     step: cent.value,
                     min: "0",
                   }}
-                  // value={cent.quantity || ""}
                   value={cent.quantity === 0 ? "" : cent.quantity}
                   onChange={handleCentsInputChange}
                   sx={{ margin: "5px" }}

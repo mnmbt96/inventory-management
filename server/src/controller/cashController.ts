@@ -25,7 +25,7 @@ export const registerCash = async (req: Request, res: Response) => {
       })
       .catch((error) => {
         console.log(error);
-        res.status(500).send("Error saving user data.");
+        res.status(500).send("Error saving cash data.");
       });
   } catch (error) {
     console.log(error);
@@ -107,7 +107,7 @@ export const deleteCash = async (req: Request, res: Response) => {
     }
 
     await Cash.findByIdAndRemove(id);
-    res.json({ message: "Post deleted successfully" });
+    res.json({ message: "Cash deleted successfully" });
   } catch (error) {
     console.log(error);
     res.status(500).send({ message: "Server Error", error });

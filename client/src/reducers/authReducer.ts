@@ -8,6 +8,8 @@ const initialState: UserType = {
   email: "",
   password: "",
   _id: "",
+  initials: "",
+  color: "",
 };
 
 const authReducer = (state = initialState, action: ActionType) => {
