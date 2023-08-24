@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const API = axios.create({
-  baseURL: "https://inventory-management-server-delta.vercel.app/",
+  baseURL: "https://mnmbt-inventory-management-server.vercel.app/",
 });
 
 API.interceptors.request.use((req) => {
