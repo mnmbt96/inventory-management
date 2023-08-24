@@ -10,18 +10,7 @@ import bodyParser from "body-parser";
 const app: Application = express();
 dotenv.config();
 
-const allowedOrigins = ["https://inventory-management-client.vercel.app"];
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-  })
-);
+app.use(cors());
 
 app.use(bodyParser.json({ limit: "30mb" }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
