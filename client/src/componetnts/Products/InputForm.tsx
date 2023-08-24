@@ -54,6 +54,7 @@ const InputForm: React.FC<InputFormProps> = ({
   };
 
   const handleClickCategory = (value: any, newValue: any) => {
+    console.log(value);
     const selectedCategories = [
       ...new Set([
         ...product.categories,

@@ -13,8 +13,6 @@ import { SearchRounded } from "@mui/icons-material";
 import { ProductType, categories } from "../../../types/types";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { getProductBySearch } from "../../../actions/action";
 import { API } from "../../../config/config";
 interface SearchProps {
   setProductData: React.Dispatch<React.SetStateAction<ProductType[]>>;
@@ -59,6 +57,7 @@ const Search: React.FC<SearchProps> = ({ setProductData }) => {
   };
 
   const handleCategoriesChange = (event: any, newValue: any) => {
+    console.log(event);
     const selectedCategories = newValue.map(
       (categoryName: string) =>
         categories.find((cat) => cat.name === categoryName)?.value ||
