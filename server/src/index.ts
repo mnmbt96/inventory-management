@@ -24,6 +24,10 @@ app.use(
   })
 );
 
+app.get("/favicon.ico", (req, res) => {
+  res.status(200).end();
+});
+
 app.use(bodyParser.json({ limit: "30mb" }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 
